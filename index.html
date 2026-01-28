@@ -1,1 +1,106 @@
-Hello World
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>betterCam - Support & Privacy</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --accent-color: #3D4636; /* 匹配你图标的底色 */
+            --text-color: #e0e0e0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .icon-placeholder {
+            width: 100px;
+            height: 100px;
+            background-color: var(--accent-color);
+            border-radius: 22.5%; /* 标准 iOS 图标圆角 */
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        h1 { font-weight: 300; letter-spacing: 1px; }
+        section {
+            background: #252525;
+            padding: 30px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+        h2 { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; }
+        p { margin-bottom: 0; }
+        .contact-btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 500;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #555;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon-placeholder">betterCam</div>
+            <h1>betterCam</h1>
+            <p>Experience the soul of analog photography on iOS 18.</p>
+        </div>
+
+        <section>
+            <h2>Support</h2>
+            <p>Need help with betterCam? Whether it's about the <b>iOS 18 Shutter Button</b> integration or using our <b>RAW+Film</b> simulation, we are here to help.</p>
+            <a href="mailto:beijingrice@outlook.com" class="contact-btn">Contact Support</a>
+        </section>
+
+        <section>
+            <h2>Privacy Policy</h2>
+            <p><b>Your privacy is our priority.</b></p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li><b>No Data Collection:</b> betterCam does not collect or transmit any personal data.</li>
+                <li><b>Local Processing:</b> All film simulations and RAW processing happen locally on your device.</li>
+                <li><b>Photo Access:</b> We only access your Photo Library to save your creations.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Features</h2>
+            <p>Scientifically calibrated film simulations based on real <b>Fuji C200/C400</b> characteristic curves.</p>
+        </section>
+
+        <div class="footer">
+            &copy; 2026 Rice. All rights reserved.
+        </div>
+    </div>
+</body>
+</html>
