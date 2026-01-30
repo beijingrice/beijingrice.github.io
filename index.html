@@ -7,9 +7,23 @@
     <style>
         :root {
             --bg-color: #1a1a1a;
-            --accent-color: #3D4636;
+            --accent-color: #3D4636; /* 匹配图标底色 */
             --text-color: #e0e0e0;
         }
+
+        /* 💡 默认语言控制逻辑：初始隐藏所有多语言块，仅显示匹配项 */
+        [lang="zh"], [lang="ja"], [lang="en"] { display: none; }
+        
+        /* 根据 HTML 根节点的 lang 属性显示对应内容 */
+        html[lang="en"] [lang="en"] { display: block; }
+        html[lang="zh"] [lang="zh"] { display: block; }
+        html[lang="ja"] [lang="ja"] { display: block; }
+
+        /* 针对行内元素（如 span, b）的显示处理 */
+        html[lang="en"] span[lang="en"], html[lang="en"] b[lang="en"] { display: inline; }
+        html[lang="zh"] span[lang="zh"], html[lang="zh"] b[lang="zh"] { display: inline; }
+        html[lang="ja"] span[lang="ja"], html[lang="ja"] b[lang="ja"] { display: inline; }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif;
             background-color: var(--bg-color);
@@ -20,30 +34,35 @@
             display: flex;
             justify-content: center;
         }
+
         .container { max-width: 600px; width: 100%; }
         .header { text-align: center; margin-bottom: 60px; }
+        
         .icon-placeholder {
             width: 100px; height: 100px;
             background-color: var(--accent-color);
-            border-radius: 22.5%;
+            border-radius: 22.5%; /* 标准 iOS 图标圆角 */
             margin: 0 auto 20px;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; font-size: 14px; color: white;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
+
         h1 { font-weight: 300; letter-spacing: 1px; }
         section { background: #252525; padding: 30px; border-radius: 16px; margin-bottom: 24px; }
         h2 { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; }
+        p { margin-bottom: 0; }
         ul { padding-left: 20px; margin-top: 10px; }
         li { margin-bottom: 8px; }
+
         .contact-btn {
             display: inline-block; background: var(--accent-color); color: white;
             text-decoration: none; padding: 12px 24px; border-radius: 8px;
-            margin-top: 20px; font-weight: 500;
+            margin-top: 20px; font-weight: 500; transition: opacity 0.2s;
         }
+        .contact-btn:hover { opacity: 0.8; }
+
         .footer { text-align: center; font-size: 12px; color: #555; margin-top: 60px; }
-        /* 💡 初始隐藏，防止加载时闪烁 */
-        [data-lang] { display: none; }
     </style>
 </head>
 <body>
@@ -51,12 +70,83 @@
         <div class="header">
             <div class="icon-placeholder">betterCam</div>
             <h1>betterCam</h1>
-            <p data-lang="en">Experience the soul of analog photography on iOS 18.</p>
-            <p data-lang="zh">在 iOS 18 上体验胶片摄影的灵魂。</p>
-            <p data-lang="ja">iOS 18 でアナログ写真の魂を体験する。</p>
+            <p lang="en">Experience the soul of analog photography on iOS 18.</p>
+            <p lang="zh">在 iOS 18 上体验胶片摄影的灵魂。</p>
+            <p lang="ja">iOS 18 でアナログ写真の魂を体験する。</p>
         </div>
 
         <section>
-            <h2 data-lang="en">Support</h2>
-            <h2 data-lang="zh">支持</h2>
-            <h2 data-
+            <h2 lang="en">Support</h2>
+            <h2 lang="zh">支持</h2>
+            <h2 lang="ja">サポート</h2>
+            
+            <p lang="en">Need help with betterCam? Whether it's about the <b>iOS 18 Shutter Button</b> integration or using our <b>RAW+Film</b> simulation, we are here to help.</p>
+            <p lang="zh">需要帮助？无论是关于 <b>iOS 18 快门键</b> 的集成，还是 <b>RAW+胶片模拟</b> 的使用，我们随时为您提供支持。</p>
+            <p lang="ja">betterCam に関するヘルプが必要ですか？<b>iOS 18 シャッターボタン</b>の連携や、<b>RAW+フィルムシミュレーション</b>の使用方法など、お気軽にお問い合わせください。</p>
+            
+            <a href="mailto:beijingrice@outlook.com" class="contact-btn">
+                <span lang="en">Contact Support</span>
+                <span lang="zh">联系支持</span>
+                <span lang="ja">サポートに連絡</span>
+            </a>
+        </section>
+
+        <section>
+            <h2 lang="en">Privacy Policy</h2>
+            <h2 lang="zh">隐私政策</h2>
+            <h2 lang="ja">プライバシーポリシー</h2>
+            
+            <p>
+                <b lang="en">Your privacy is our priority.</b>
+                <b lang="zh">您的隐私是我们的首要任务。</b>
+                <b lang="ja">私たちはユーザーのプライバシーを最優先事項としています。</b>
+            </p>
+            
+            <ul lang="en">
+                <li><b>No Data Collection:</b> betterCam does not collect or transmit any personal data.</li>
+                <li><b>Local Processing:</b> All film simulations and RAW processing happen locally on your device.</li>
+                <li><b>Photo Access:</b> We only access your Photo Library to save your creations.</li>
+            </ul>
+            <ul lang="zh">
+                <li><b>无数据收集：</b>betterCam 不会收集或传输任何个人数据。</li>
+                <li><b>本地处理：</b>所有胶片模拟和 RAW 处理均在您的设备本地完成。</li>
+                <li><b>照片权限：</b>我们仅申请访问相册以保存您的作品。</li>
+            </ul>
+            <ul lang="ja">
+                <li><b>データ収集なし：</b>betterCam は個人データを収集または送信しません。</li>
+                <li><b>ローカル処理：</b>フィルムシミュレーションと RAW 現像はすべてデバイス内で行われます。</li>
+                <li><b>写真へのアクセス：</b>作成した写真を保存するためにのみ、写真ライブラリを使用します。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 lang="en">Features</h2>
+            <h2 lang="zh">特性</h2>
+            <h2 lang="ja">主な機能</h2>
+            <p lang="en">Scientifically calibrated film simulations based on real <b>Fuji C200/C400</b> characteristic curves.</p>
+            <p lang="zh">基于真实 <b>Fuji C200/C400</b> 特性曲线经过科学标定的胶片模拟。</p>
+            <p lang="ja">実際の <b>Fuji C200/C400</b> 特性曲線に基づき、科学的に校正されたフィルムシミュレーション。</p>
+        </section>
+
+        <div class="footer">
+            &copy; 2026 Rice. All rights reserved.
+        </div>
+    </div>
+
+    <script>
+        // 💡 极简的检测逻辑，仅用于修改 html 的 lang 属性
+        (function() {
+            const navLang = navigator.language || navigator.userLanguage || 'en';
+            const htmlEl = document.documentElement;
+            
+            if (navLang.startsWith('zh')) {
+                htmlEl.lang = 'zh';
+            } else if (navLang.startsWith('ja')) {
+                htmlEl.lang = 'ja';
+            } else {
+                htmlEl.lang = 'en';
+            }
+        })();
+    </script>
+</body>
+</html>
