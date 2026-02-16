@@ -1,152 +1,169 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>betterCam - Support & Privacy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>betterCam - SwiftUI Style Layout</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --bg-color: #1a1a1a;
-            --accent-color: #3D4636; /* 匹配图标底色 */
-            --text-color: #e0e0e0;
-        }
-
-        /* 💡 默认语言控制逻辑：初始隐藏所有多语言块，仅显示匹配项 */
-        [lang="zh"], [lang="ja"], [lang="en"] { display: none; }
-        
-        /* 根据 HTML 根节点的 lang 属性显示对应内容 */
-        html[lang="en"] [lang="en"] { display: block; }
-        html[lang="zh"] [lang="zh"] { display: block; }
-        html[lang="ja"] [lang="ja"] { display: block; }
-
-        /* 针对行内元素（如 span, b）的显示处理 */
-        html[lang="en"] span[lang="en"], html[lang="en"] b[lang="en"] { display: inline; }
-        html[lang="zh"] span[lang="zh"], html[lang="zh"] b[lang="zh"] { display: inline; }
-        html[lang="ja"] span[lang="ja"], html[lang="ja"] b[lang="ja"] { display: inline; }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            margin: 0;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container { max-width: 600px; width: 100%; }
-        .header { text-align: center; margin-bottom: 60px; }
-        
-        .icon-placeholder {
-            width: 100px; height: 100px;
-            background-color: var(--accent-color);
-            border-radius: 22.5%; /* 标准 iOS 图标圆角 */
-            margin: 0 auto 20px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px; color: white;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-
-        h1 { font-weight: 300; letter-spacing: 1px; }
-        section { background: #252525; padding: 30px; border-radius: 16px; margin-bottom: 24px; }
-        h2 { color: #888; font-size: 14px; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; }
-        p { margin-bottom: 0; }
-        ul { padding-left: 20px; margin-top: 10px; }
-        li { margin-bottom: 8px; }
-
-        .contact-btn {
-            display: inline-block; background: var(--accent-color); color: white;
-            text-decoration: none; padding: 12px 24px; border-radius: 8px;
-            margin-top: 20px; font-weight: 500; transition: opacity 0.2s;
-        }
-        .contact-btn:hover { opacity: 0.8; }
-
-        .footer { text-align: center; font-size: 12px; color: #555; margin-top: 60px; }
+        body { margin: 0; overflow: hidden; background: #000; color: white; }
+        .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; }
+        .slide-container { width: 100%; height: 100%; will-change: transform; }
+        .is-animating { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
+        .section { width: 100vw; height: 100vh; position: relative; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="icon-placeholder">betterCam</div>
-            <h1>betterCam</h1>
-            <p lang="en">Experience the soul of analog photography on iOS 18.</p>
-            <p lang="zh">在 iOS 18 上体验胶片摄影的灵魂。</p>
-            <p lang="ja">iOS 18 でアナログ写真の魂を体験する。</p>
-        </div>
 
-        <section>
-            <h2 lang="en">Support</h2>
-            <h2 lang="zh">支持</h2>
-            <h2 lang="ja">サポート</h2>
-            
-            <p lang="en">Need help with betterCam? Whether it's about the <b>iOS 18 Shutter Button</b> integration or using our <b>RAW+Film</b> simulation, we are here to help.</p>
-            <p lang="zh">需要帮助？无论是关于 <b>iOS 18 快门键</b> 的集成，还是 <b>RAW+胶片模拟</b> 的使用，我们随时为您提供支持。</p>
-            <p lang="ja">betterCam に関するヘルプが必要ですか？<b>iOS 18 シャッターボタン</b>の連携や、<b>RAW+フィルムシミュレーション</b>の使用方法など、お気軽にお問い合わせください。</p>
-            
-            <a href="mailto:beijingrice@outlook.com" class="contact-btn">
-                <span lang="en">Contact Support</span>
-                <span lang="zh">联系支持</span>
-                <span lang="ja">サポートに連絡</span>
-            </a>
-        </section>
+<div id="app">
+    <div class="viewport"
+         @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd" @wheel="handleWheel">
 
-        <section>
-            <h2 lang="en">Privacy Policy</h2>
-            <h2 lang="zh">隐私政策</h2>
-            <h2 lang="ja">プライバシーポリシー</h2>
-            
-            <p>
-                <b lang="en">Your privacy is our priority.</b>
-                <b lang="zh">您的隐私是我们的首要任务。</b>
-                <b lang="ja">私たちはユーザーのプライバシーを最優先事項としています。</b>
-            </p>
-            
-            <ul lang="en">
-                <li><b>No Data Collection:</b> betterCam does not collect or transmit any personal data.</li>
-                <li><b>Local Processing:</b> All film simulations and RAW processing happen locally on your device.</li>
-                <li><b>Photo Access:</b> We only access your Photo Library to save your creations.</li>
-            </ul>
-            <ul lang="zh">
-                <li><b>无数据收集：</b>betterCam 不会收集或传输任何个人数据。</li>
-                <li><b>本地处理：</b>所有胶片模拟和 RAW 处理均在您的设备本地完成。</li>
-                <li><b>照片权限：</b>我们仅申请访问相册以保存您的作品。</li>
-            </ul>
-            <ul lang="ja">
-                <li><b>データ収集なし：</b>betterCam は個人データを収集または送信しません。</li>
-                <li><b>ローカル処理：</b>フィルムシミュレーションと RAW 現像はすべてデバイス内で行われます。</li>
-                <li><b>写真へのアクセス：</b>作成した写真を保存するためにのみ、写真ライブラリを使用します。</li>
-            </ul>
-        </section>
+        <div class="slide-container" :class="{ 'is-animating': isAnimating }" :style="{ transform: `translateY(${currentTranslateY}px)` }">
 
-        <section>
-            <h2 lang="en">Features</h2>
-            <h2 lang="zh">特性</h2>
-            <h2 lang="ja">主な機能</h2>
-            <p lang="en">Scientifically calibrated film simulations based on real <b>Fuji C200/C400</b> characteristic curves.</p>
-            <p lang="zh">基于真实 <b>Fuji C200/C400</b> 特性曲线经过科学标定的胶片模拟。</p>
-            <p lang="ja">実際の <b>Fuji C200/C400</b> 特性曲線に基づき、科学的に校正されたフィルムシミュレーション。</p>
-        </section>
+            <section class="section flex flex-col items-center justify-center bg-zinc-900">
+                <h1 class="text-4xl font-bold mb-4">betterCam</h1>
+                <p class="text-zinc-500">在iPhone上找回摄影的仪式感</p>
+            </section>
 
-        <div class="footer">
-            &copy; 2026 Rice. All rights reserved.
+            <section class="section bg-black p-12 md:p-24">
+                <div class="flex flex-col items-start justify-start h-full">
+
+                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
+                        重构操作体验
+                    </h2>
+
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
+                        仿物理拨轮，如真机一般的触觉反馈。
+                    </p>
+
+                    <img src="dial_shutter.jpg" />
+
+                    <div class="flex-grow"></div>
+                </div>
+                <div class="flex flex-grow h-full">
+
+                </div>
+            </section>
+
+            <section class="section bg-black p-12 md:p-24">
+                <div class="flex flex-col items-start justify-start h-full">
+
+                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
+                        参数一应俱全
+                    </h2>
+
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
+                        上下参数条，符合相机操作逻辑且触手可及。
+                    </p>
+
+                    <div class="flex-grow"></div>
+                </div>
+            </section>
+
+            <section class="section bg-black p-12 md:p-24">
+                <div class="flex flex-col items-start justify-start h-full">
+
+                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
+                        专业功能满载
+                    </h2>
+
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
+                        波形图、直方图，实现准确曝光；AF-S模式，实现更符合摄影者意图的对焦。
+                    </p>
+
+                    <div class="flex-grow"></div>
+                </div>
+            </section>
+
+            <section class="section bg-black p-12 md:p-24">
+                <div class="flex flex-col items-start justify-start h-full">
+
+                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
+                        创意不设限
+                    </h2>
+
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
+                        内置多种预设和四种胶片模拟，更可导入自定义LUT，实现更多色彩风格。
+                    </p>
+
+                    <div class="flex-grow"></div>
+                </div>
+            </section>
+
         </div>
     </div>
+</div>
 
-    <script>
-        // 💡 极简的检测逻辑，仅用于修改 html 的 lang 属性
-        (function() {
-            const navLang = navigator.language || navigator.userLanguage || 'en';
-            const htmlEl = document.documentElement;
-            
-            if (navLang.startsWith('zh')) {
-                htmlEl.lang = 'zh';
-            } else if (navLang.startsWith('ja')) {
-                htmlEl.lang = 'ja';
-            } else {
-                htmlEl.lang = 'en';
-            }
-        })();
-    </script>
+<script>
+  const { createApp, ref, onMounted } = Vue;
+  createApp({
+    setup() {
+      const activeIndex = ref(0);
+      // 【关键修复 1】：将 3 改为 5，或者直接动态获取
+      // 如果你以后还会增加页面，建议用 document.querySelectorAll('.section').length
+      const totalSections = 5;
+
+      const windowHeight = ref(window.innerHeight);
+      const currentTranslateY = ref(0);
+      const isAnimating = ref(false);
+      let startY = 0;
+      let lastTranslateY = 0;
+
+      onMounted(() => {
+        window.addEventListener('resize', () => {
+          windowHeight.value = window.innerHeight;
+          currentTranslateY.value = -activeIndex.value * windowHeight.value;
+          lastTranslateY = currentTranslateY.value;
+        });
+      });
+
+      const handleTouchStart = (e) => {
+        if (isAnimating.value) return;
+        startY = e.touches[0].clientY;
+        isAnimating.value = false;
+      };
+
+      const handleTouchMove = (e) => {
+        if (isAnimating.value) return;
+        const deltaY = e.touches[0].clientY - startY;
+        let nextY = lastTranslateY + deltaY;
+
+        // 【关键修复 2】：这里的判断逻辑依赖上面的 totalSections
+        if (nextY > 0 || nextY < -(totalSections - 1) * windowHeight.value) {
+          nextY = lastTranslateY + deltaY * 0.3;
+        }
+        currentTranslateY.value = nextY;
+      };
+
+      const handleTouchEnd = () => {
+        isAnimating.value = true;
+        const progress = -currentTranslateY.value / windowHeight.value;
+        // 【关键修复 3】：targetIndex 的上限也依赖 totalSections
+        const targetIndex = Math.max(0, Math.min(totalSections - 1, Math.round(progress)));
+        snapTo(targetIndex);
+      };
+
+      const handleWheel = (e) => {
+        if (isAnimating.value || Math.abs(e.deltaY) < 10) return;
+        isAnimating.value = true;
+        // 【关键修复 4】：滚轮逻辑的边界检查
+        if (e.deltaY > 0 && activeIndex.value < totalSections - 1) activeIndex.value++;
+        else if (e.deltaY < 0 && activeIndex.value > 0) activeIndex.value--;
+        snapTo(activeIndex.value);
+      };
+
+      const snapTo = (index) => {
+        activeIndex.value = index;
+        currentTranslateY.value = -index * windowHeight.value;
+        lastTranslateY = currentTranslateY.value;
+        setTimeout(() => { isAnimating.value = false; }, 600);
+      };
+
+      return { currentTranslateY, isAnimating, handleTouchStart, handleTouchMove, handleTouchEnd, handleWheel };
+    }
+  }).mount('#app');
+</script>
 </body>
 </html>
