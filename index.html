@@ -1,169 +1,189 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>betterCam - SwiftUI Style Layout</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <title>betterCam - Tactile Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; color: white; }
-        .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; }
-        .slide-container { width: 100%; height: 100%; will-change: transform; }
-        .is-animating { transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1); }
-        .section { width: 100vw; height: 100vh; position: relative; }
+        body { margin: 0; overflow: hidden; background: #000; -webkit-font-smoothing: antialiased; }
+        .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; overflow: hidden; }
+
+        /* 💡 弹簧过渡动画 */
+        .slide-container {
+            width: 100%; height: 100%;
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1);
+            will-change: transform;
+        }
+
+        .section { height: 100vh; width: 100vw; flex-shrink: 0; }
+
+        /* 💡 纹理叠加层 - 放在图片上方 */
+        .grain-overlay {
+            position: absolute; inset: 0;
+            background-image: url('matte_metallic_grain.png');
+            opacity: 0.04; pointer-events: none; mix-blend-mode: overlay;
+            z-index: 10;
+        }
+
+        /* 💡 图片容器：实现圆角矩形裁切，不带生硬边框 */
+        /* 💡 核心修复：容器不再强制比例，而是根据内容自适应或设定最大高度 */
+        .image-card {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* 增加宽度上限以适应长方形图 */
+            max-height: 55vh; /* 限制高度，防止在长屏手机上过大 */
+            border-radius: 30px; /* iOS 风格大圆角 */
+            overflow: hidden; /* 关键：裁剪掉图片超出圆角的部分 */
+            background: #000; /* 背景设为纯黑，使 contain 产生的留白不可见 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 💡 核心修复：使用 contain 确保长方形图片完整显示 */
+        .image-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain; /* 确保完整显示，不裁切任何像素 */
+            display: block;
+        }
+
+        .qr-card {
+            position: relative;
+            width: 100%;
+            max-width: 250px;
+            aspect-ratio: 1 / 1;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            background: #1a1a1a;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .qr-card img {
+            max-width: 100%; /* 收款码内边距 */
+            max-height: 100%;
+            object-fit: contain;
+        }
     </style>
 </head>
-<body>
+<body class="text-white">
 
-<div id="app">
-    <div class="viewport"
-         @touchstart="handleTouchStart" @touchmove="handleTouchMove" @touchend="handleTouchEnd" @wheel="handleWheel">
+<div class="viewport" id="viewport">
+    <div class="slide-container" id="container">
 
-        <div class="slide-container" :class="{ 'is-animating': isAnimating }" :style="{ transform: `translateY(${currentTranslateY}px)` }">
+        <section class="section flex flex-col items-center justify-center bg-zinc-900/40">
+            <div class="w-20 h-20 bg-[#3D4636] rounded-[22.5%] mb-8 shadow-2xl flex items-center justify-center font-bold text-[10px]">betterCam</div>
+            <h1 class="text-6xl font-bold tracking-tighter mb-4">betterCam</h1>
+            <p class="text-zinc-500 text-xl">Analog soul, modern precision.</p>
+        </section>
 
-            <section class="section flex flex-col items-center justify-center bg-zinc-900">
-                <h1 class="text-4xl font-bold mb-4">betterCam</h1>
-                <p class="text-zinc-500">在iPhone上找回摄影的仪式感</p>
-            </section>
-
-            <section class="section bg-black p-12 md:p-24">
-                <div class="flex flex-col items-start justify-start h-full">
-
-                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
-                        重构操作体验
-                    </h2>
-
-                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
-                        仿物理拨轮，如真机一般的触觉反馈。
-                    </p>
-
-                    <img src="dial_shutter.jpg" />
-
-                    <div class="flex-grow"></div>
+        <section class="section flex items-center justify-center p-8 md:p-24">
+            <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-2/5">
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Tactile<br>Feedback.</h2>
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed">Simulated physical dials via the <b>Taptic Engine</b>. Feel every gear click.</p>
                 </div>
-                <div class="flex flex-grow h-full">
-
+                <div class="md:w-3/5 w-full flex justify-center">
+                    <div class="image-card">
+                        <div class="grain-overlay"></div>
+                        <img src="dial.png" class="w-full h-full object-cover" alt="Tactile Interface">
+                    </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="section bg-black p-12 md:p-24">
-                <div class="flex flex-col items-start justify-start h-full">
-
-                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
-                        参数一应俱全
-                    </h2>
-
-                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
-                        上下参数条，符合相机操作逻辑且触手可及。
-                    </p>
-
-                    <div class="flex-grow"></div>
+        <section class="section flex items-center justify-center p-8 md:p-24">
+            <div class="max-w-6xl w-full flex flex-col md:flex-row-reverse items-center gap-16">
+                <div class="md:w-2/5">
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Everything<br>in Reach.</h2>
+                    <p class="text-zinc-400 text-xl">Logical workflow for professional control.</p>
                 </div>
-            </section>
-
-            <section class="section bg-black p-12 md:p-24">
-                <div class="flex flex-col items-start justify-start h-full">
-
-                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
-                        专业功能满载
-                    </h2>
-
-                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
-                        波形图、直方图，实现准确曝光；AF-S模式，实现更符合摄影者意图的对焦。
-                    </p>
-
-                    <div class="flex-grow"></div>
+                <div class="md:w-3/5 w-full flex justify-center">
+                    <div class="image-card">
+                        <div class="grain-overlay"></div>
+                        <img src="params.jpg" class="w-full h-full object-cover" alt="Workflow">
+                    </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="section bg-black p-12 md:p-24">
-                <div class="flex flex-col items-start justify-start h-full">
-
-                    <h2 class="text-6xl md:text-8xl font-bold mb-8 tracking-tighter">
-                        创意不设限
-                    </h2>
-
-                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed max-w-lg tracking-wide">
-                        内置多种预设和四种胶片模拟，更可导入自定义LUT，实现更多色彩风格。
-                    </p>
-
-                    <div class="flex-grow"></div>
+        <section class="section flex items-center justify-center p-8 md:p-24">
+            <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-16">
+                <div class="md:w-2/5">
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Pro Tools.</h2>
+                    <p class="text-zinc-400 text-xl">Waveforms, Histograms, and AF-S mode for intentional creators.</p>
                 </div>
-            </section>
+                <div class="md:w-3/5 w-full flex justify-center">
+                    <div class="image-card">
+                        <div class="grain-overlay"></div>
+                        <img src="pro_tools.png" class="w-full h-full object-cover" alt="Professional Tools">
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        </div>
+        <section class="section flex flex-col items-center justify-center p-8">
+            <h2 class="text-5xl md:text-7xl font-bold mb-12 tracking-tighter text-center">Unlimit Your<br>Creativity.</h2>
+            <div class="image-card !max-w-4xl !aspect-video mb-12">
+                <div class="grain-overlay"></div>
+                <img src="creative_sample.png" class="w-full h-full object-cover" alt="Film Sample">
+            </div>
+        </section>
+
+        <section class="section flex flex-col items-center justify-center bg-black/80 p-8">
+            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">Support betterCam.</h2>
+            <p class="text-zinc-400 text-xl md:text-2xl text-center max-w-2xl mb-12">
+                If you enjoy betterCam, consider supporting its development. Every contribution helps.
+            </p>
+            <div class="flex flex-col md:flex-row gap-8 justify-center items-center max-w-4xl w-full">
+                <div class="qr-card">
+                    <div class="grain-overlay"></div>
+                    <img src="alipay_qr.jpg" alt="Alipay QR Code">
+                </div>
+            </div>
+            <p class="text-zinc-600 text-sm mt-12">Thank you for your generosity!</p>
+            <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
+        </section>
+
     </div>
 </div>
 
 <script>
-  const { createApp, ref, onMounted } = Vue;
-  createApp({
-    setup() {
-      const activeIndex = ref(0);
-      // 【关键修复 1】：将 3 改为 5，或者直接动态获取
-      // 如果你以后还会增加页面，建议用 document.querySelectorAll('.section').length
-      const totalSections = 5;
+  const container = document.getElementById('container');
+  const viewport = document.getElementById('viewport');
+  let currentIndex = 0;
+  // 💡 更新 totalSections 数量为 6 (新增打赏 Section)
+  const totalSections = 6;
+  let isMoving = false;
+  let startY = 0;
 
-      const windowHeight = ref(window.innerHeight);
-      const currentTranslateY = ref(0);
-      const isAnimating = ref(false);
-      let startY = 0;
-      let lastTranslateY = 0;
+  window.addEventListener('wheel', (e) => {
+    if (isMoving) return;
+    if (Math.abs(e.deltaY) < 30) return;
+    if (e.deltaY > 0 && currentIndex < totalSections - 1) currentIndex++;
+    else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
+    move();
+  });
 
-      onMounted(() => {
-        window.addEventListener('resize', () => {
-          windowHeight.value = window.innerHeight;
-          currentTranslateY.value = -activeIndex.value * windowHeight.value;
-          lastTranslateY = currentTranslateY.value;
-        });
-      });
-
-      const handleTouchStart = (e) => {
-        if (isAnimating.value) return;
-        startY = e.touches[0].clientY;
-        isAnimating.value = false;
-      };
-
-      const handleTouchMove = (e) => {
-        if (isAnimating.value) return;
-        const deltaY = e.touches[0].clientY - startY;
-        let nextY = lastTranslateY + deltaY;
-
-        // 【关键修复 2】：这里的判断逻辑依赖上面的 totalSections
-        if (nextY > 0 || nextY < -(totalSections - 1) * windowHeight.value) {
-          nextY = lastTranslateY + deltaY * 0.3;
-        }
-        currentTranslateY.value = nextY;
-      };
-
-      const handleTouchEnd = () => {
-        isAnimating.value = true;
-        const progress = -currentTranslateY.value / windowHeight.value;
-        // 【关键修复 3】：targetIndex 的上限也依赖 totalSections
-        const targetIndex = Math.max(0, Math.min(totalSections - 1, Math.round(progress)));
-        snapTo(targetIndex);
-      };
-
-      const handleWheel = (e) => {
-        if (isAnimating.value || Math.abs(e.deltaY) < 10) return;
-        isAnimating.value = true;
-        // 【关键修复 4】：滚轮逻辑的边界检查
-        if (e.deltaY > 0 && activeIndex.value < totalSections - 1) activeIndex.value++;
-        else if (e.deltaY < 0 && activeIndex.value > 0) activeIndex.value--;
-        snapTo(activeIndex.value);
-      };
-
-      const snapTo = (index) => {
-        activeIndex.value = index;
-        currentTranslateY.value = -index * windowHeight.value;
-        lastTranslateY = currentTranslateY.value;
-        setTimeout(() => { isAnimating.value = false; }, 600);
-      };
-
-      return { currentTranslateY, isAnimating, handleTouchStart, handleTouchMove, handleTouchEnd, handleWheel };
+  viewport.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; });
+  viewport.addEventListener('touchend', (e) => {
+    if (isMoving) return;
+    const diff = startY - e.changedTouches[0].clientY;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0 && currentIndex < totalSections - 1) currentIndex++;
+      else if (diff < 0 && currentIndex > 0) currentIndex--;
+      move();
     }
-  }).mount('#app');
+  });
+
+  function move() {
+    isMoving = true;
+    container.style.transform = `translateY(-${currentIndex * 100}vh)`;
+    setTimeout(() => { isMoving = false; }, 800);
+  }
 </script>
 </body>
 </html>
