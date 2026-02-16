@@ -172,7 +172,7 @@
   viewport.addEventListener('touchend', (e) => {
     if (isMoving) return;
     const diff = startY - e.changedTouches[0].clientY;
-    if (Math.abs(diff) > 50) {
+    if (Math.abs(diff) > 30) {
       if (diff > 0 && currentIndex < totalSections - 1) currentIndex++;
       else if (diff < 0 && currentIndex > 0) currentIndex--;
       move();
