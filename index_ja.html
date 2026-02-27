@@ -1,74 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>betterCam - Tactile Control</title>
+    <title>betterCam - フィルムの魂、現代の精密</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { margin: 0; overflow: hidden; background: #000; -webkit-font-smoothing: antialiased; }
         .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; overflow: hidden; }
-
-        /* 💡 弹簧过渡动画 */
-        .slide-container {
-            width: 100%; height: 100%;
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1);
-            will-change: transform;
-        }
-
+        .slide-container { width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1); will-change: transform; }
         .section { height: 100vh; width: 100vw; flex-shrink: 0; }
-
-        /* 💡 纹理叠加层 - 放在图片上方 */
-        .grain-overlay {
-            position: absolute; inset: 0;
-            background-image: url('matte_metallic_grain.png');
-            opacity: 0.04; pointer-events: none; mix-blend-mode: overlay;
-            z-index: 10;
-        }
-
-        /* 💡 图片容器：实现圆角矩形裁切，不带生硬边框 */
-        /* 💡 核心修复：容器不再强制比例，而是根据内容自适应或设定最大高度 */
-        .image-card {
-            position: relative;
-            width: 100%;
-            max-width: 600px; /* 增加宽度上限以适应长方形图 */
-            max-height: 55vh; /* 限制高度，防止在长屏手机上过大 */
-            border-radius: 30px; /* iOS 风格大圆角 */
-            overflow: hidden; /* 关键：裁剪掉图片超出圆角的部分 */
-            background: #000; /* 背景设为纯黑，使 contain 产生的留白不可见 */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 💡 核心修复：使用 contain 确保长方形图片完整显示 */
-        .image-card img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain; /* 确保完整显示，不裁切任何像素 */
-            display: block;
-        }
-
-        .qr-card {
-            position: relative;
-            width: 100%;
-            max-width: 250px;
-            aspect-ratio: 1 / 1;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            background: #1a1a1a;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .qr-card img {
-            max-width: 100%; /* 收款码内边距 */
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        /* 💡 新的 App Store 按钮样式，使用黑色毛玻璃质感 */
+        .grain-overlay { position: absolute; inset: 0; background-image: url('matte_metallic_grain.png'); opacity: 0.04; pointer-events: none; mix-blend-mode: overlay; z-index: 10; }
+        .image-card { position: relative; width: 100%; max-width: 600px; max-height: 55vh; border-radius: 30px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
+        .image-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .qr-card { position: relative; width: 100%; max-width: 250px; aspect-ratio: 1 / 1; border-radius: 0.5rem; overflow: hidden; background: #1a1a1a; box-shadow: 0 10px 20px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.4s ease; }
+        .qr-card:hover { border-color: rgba(0, 163, 238, 0.5); transform: translateY(-5px); }
+        .qr-card img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        .text-blue-400 { color: #00A3EE; text-shadow: 0 0 10px rgba(0, 163, 238, 0.3); }
+        .lang-switcher { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
+        .lang-switcher a { color: #888; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.3s; }
+        .lang-switcher a.active { color: #fff; pointer-events: none; }
+        .lang-switcher a:hover { color: #fff; }
         .download-btn {
             display: flex;
             align-items: center;
@@ -100,20 +52,14 @@
             filter: brightness(1.1); /* 稍微提亮蓝色 */
             display: block;
         }
-
-        .text-blue-400 { color: #00A3EE; text-shadow: 0 0 10px rgba(0, 163, 238, 0.3); }
-        .lang-switcher { position: fixed; top: 20px; right: 20px; z-index: 100; display: flex; gap: 12px; background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.1); }
-        .lang-switcher a { color: #888; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.3s; }
-        .lang-switcher a.active { color: #fff; pointer-events: none; }
-        .lang-switcher a:hover { color: #fff; }
     </style>
 </head>
 <body class="text-white">
 
 <div class="lang-switcher">
-    <a href="index.html" class="active">EN</a>
+    <a href="index.html">EN</a>
     <a href="index_cn.html">中文</a>
-    <a href="index_ja.html">日本語</a>
+    <a href="index_ja.html" class="active">日本語</a>
 </div>
 
 <div class="viewport" id="viewport">
@@ -122,19 +68,19 @@
         <section class="section flex flex-col items-center justify-center bg-zinc-900/40">
             <img src="appicon.png" alt="betterCam App Icon" class="w-40 h-40 rounded-[22.5%] mb-8 shadow-2xl">
             <h1 class="text-6xl font-bold tracking-tighter mb-4">betterCam</h1>
-            <p class="text-zinc-500 text-xl">Analog soul, modern precision.</p>
+            <p class="text-zinc-500 text-xl">フィルムの魂、現代の精密。</p>
         </section>
 
         <section class="section flex items-center justify-center p-8 md:p-24">
             <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-16">
                 <div class="md:w-2/5">
-                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Tactile<br>Feedback.</h2>
-                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed">Simulated physical dials via the <b>Taptic Engine</b>. Feel every gear click.</p>
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">タクタイル<br>フィードバック</h2>
+                    <p class="text-zinc-400 text-xl md:text-2xl leading-relaxed"><b>Taptic Engine</b> による物理ダイヤルの再現。ギアが噛み合うクリック感を指先で。</p>
                 </div>
                 <div class="md:w-3/5 w-full flex justify-center">
                     <div class="image-card">
                         <div class="grain-overlay"></div>
-                        <img src="dial.png" class="w-full h-full object-cover" alt="Tactile Interface">
+                        <img src="dial.png" alt="Tactile Interface">
                     </div>
                 </div>
             </div>
@@ -143,13 +89,13 @@
         <section class="section flex items-center justify-center p-8 md:p-24">
             <div class="max-w-6xl w-full flex flex-col md:flex-row-reverse items-center gap-16">
                 <div class="md:w-2/5">
-                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Everything<br>in Reach.</h2>
-                    <p class="text-zinc-400 text-xl">Logical workflow for professional control.</p>
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">すべてを<br>その手に</h2>
+                    <p class="text-zinc-400 text-xl">プロフェッショナルのための論理的なワークフロー。</p>
                 </div>
                 <div class="md:w-3/5 w-full flex justify-center">
                     <div class="image-card">
                         <div class="grain-overlay"></div>
-                        <img src="params.jpg" class="w-full h-full object-cover" alt="Workflow">
+                        <img src="params.jpg" alt="Workflow">
                     </div>
                 </div>
             </div>
@@ -158,42 +104,41 @@
         <section class="section flex items-center justify-center p-8 md:p-24">
             <div class="max-w-6xl w-full flex flex-col md:flex-row items-center gap-16">
                 <div class="md:w-2/5">
-                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">Pro Tools.</h2>
-                    <p class="text-zinc-400 text-xl">Waveforms, Histograms, and AF-S mode for intentional creators.</p>
+                    <h2 class="text-5xl md:text-7xl font-bold tracking-tighter mb-6">プロツール</h2>
+                    <p class="text-zinc-400 text-xl">ウェーブフォーム、ヒストグラム、AF-Sモード。こだわりのクリエイターへ。</p>
                 </div>
                 <div class="md:w-3/5 w-full flex justify-center">
                     <div class="image-card">
                         <div class="grain-overlay"></div>
-                        <img src="pro_tools.png" class="w-full h-full object-cover" alt="Professional Tools">
+                        <img src="pro_tools.png" alt="Professional Tools">
                     </div>
                 </div>
             </div>
         </section>
 
         <section class="section flex flex-col items-center justify-center p-8">
-            <h2 class="text-5xl md:text-7xl font-bold mb-12 tracking-tighter text-center">Film Simulation.<br>Unleash Your<br>Creativity.</h2>
+            <h2 class="text-5xl md:text-7xl font-bold mb-12 tracking-tighter text-center">フィルムシミュレーション<br>創造性を<br>解き放つ</h2>
             <div class="image-card !max-w-4xl !aspect-video mb-12">
                 <div class="grain-overlay"></div>
-                <img src="creative_sample.png" class="w-full h-full object-cover" alt="Film Sample">
+                <img src="creative_sample.png" alt="Film Sample">
             </div>
         </section>
 
         <section class="section flex flex-col items-center justify-center p-8 bg-zinc-900/10">
-            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">Ready to Capture?</h2>
-            <a href="https://apps.apple.com/cn/app/bettercam-raw-film-metal/id6758376631?l=en-GB" class="download-btn">
-                <img src="https://www.apple.com/v/app-store/c/images/overview/icon_appstore__ev0z770zyxoy_large_2x.png" class="app-store-icon" alt="App Store Icon">
-                <span>Download on the App Store</span>
+            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">今すぐ撮影を始める</h2>
+            <a href="https://apps.apple.com/cn/app/bettercam-raw-film-metal/id6758376631?l=ja" class="download-btn">
+                <img src="https://www.apple.com/v/app-store/c/images/overview/icon_appstore__ev0z770zyxoy_large_2x.png" class="app-store-icon" alt="App Store アイコン">
+                <span>App Store でダウンロード</span>
             </a>
         </section>
 
         <section class="section flex flex-col items-center justify-center bg-black/80 p-8">
-            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">Support betterCam.</h2>
+            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">betterCam を支援する</h2>
 
             <div class="flex flex-col items-center gap-6">
                 <p class="text-zinc-200 text-lg md:text-xl font-medium tracking-wide">
-                    Scan to Donate via <span class="text-blue-400">Alipay</span>
+                    <span class="text-blue-400">Alipay</span> で寄付する
                 </p>
-
                 <div class="qr-card">
                     <div class="grain-overlay"></div>
                     <img src="alipay_qr.jpg" alt="Alipay QR Code">
@@ -201,7 +146,7 @@
             </div>
 
             <p class="text-zinc-400 text-xl md:text-2xl text-center max-w-2xl mt-12 mb-12">
-                If you enjoy betterCam, consider supporting its development. Every contribution helps.
+                betterCam をお楽しみいただけましたら、開発のサポートをお願いします。皆様のご支援が力になります。
             </p>
 
             <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
@@ -214,14 +159,12 @@
   const container = document.getElementById('container');
   const viewport = document.getElementById('viewport');
   let currentIndex = 0;
-  // 💡 更新 totalSections 数量为 6 (新增打赏 Section)
   const totalSections = 7;
   let isMoving = false;
   let startY = 0;
 
   window.addEventListener('wheel', (e) => {
-    if (isMoving) return;
-    if (Math.abs(e.deltaY) < 30) return;
+    if (isMoving || Math.abs(e.deltaY) < 30) return;
     if (e.deltaY > 0 && currentIndex < totalSections - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
     move();
