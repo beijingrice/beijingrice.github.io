@@ -6,10 +6,18 @@
     <title>betterCam - 胶片灵魂，现代精密</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .section:last-child {
+            padding-bottom: env(safe-area-inset-bottom); /* 适配 iOS 底部横条 */
+        }
+
         body { margin: 0; overflow: hidden; background: #000; -webkit-font-smoothing: antialiased; }
-        .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; overflow: hidden; }
+        .viewport { width: 100vw; height: 100dvh; position: relative; touch-action: none; overflow: hidden; }
         .slide-container { width: 100%; height: 100%; transition: transform 0.8s cubic-bezier(0.2, 1, 0.2, 1); will-change: transform; }
-        .section { height: 100vh; width: 100vw; flex-shrink: 0; }
+        .section { height: 100dvh; width: 100vw; flex-shrink: 0; }
         .grain-overlay { position: absolute; inset: 0; background-image: url('matte_metallic_grain.png'); opacity: 0.04; pointer-events: none; mix-blend-mode: overlay; z-index: 10; }
         .image-card { position: relative; width: 100%; max-width: 600px; max-height: 55vh; border-radius: 30px; overflow: hidden; background: #000; display: flex; align-items: center; justify-content: center; }
         .image-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -65,7 +73,7 @@
 <div class="viewport" id="viewport">
     <div class="slide-container" id="container">
 
-        <section class="section flex flex-col items-center justify-center bg-zinc-900/40">
+        <section class="section flex flex-col items-center justify-center">
             <img src="appicon.png" alt="betterCam App Icon" class="w-40 h-40 rounded-[22.5%] mb-8 shadow-2xl">
             <h1 class="text-6xl font-bold tracking-tighter mb-4">betterCam</h1>
             <p class="text-zinc-500 text-xl">胶片灵魂，现代精密。</p>
@@ -132,24 +140,23 @@
             </a>
         </section>
 
-        <section class="section flex flex-col items-center justify-center bg-black/80 p-8">
-            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">支持 betterCam</h2>
-
-            <div class="flex flex-col items-center gap-6">
-                <p class="text-zinc-200 text-lg md:text-xl font-medium tracking-wide">
-                    使用 <span class="text-blue-400">支付宝</span> 扫码捐赠
-                </p>
-                <div class="qr-card">
-                    <div class="grain-overlay"></div>
-                    <img src="alipay_qr.jpg" alt="Alipay QR Code">
+        <section class="section flex flex-col items-center justify-between bg-black/80 p-8">
+            <div class="flex-1 flex flex-col items-center justify-center w-full">
+                <h2 class="text-4xl md:text-6xl font-bold mb-8 tracking-tighter text-center">支持 betterCam</h2>
+                <div class="flex flex-col items-center gap-6 mb-8">
+                    <p class="text-zinc-200 text-lg font-medium">使用 <span class="text-blue-400" style="color:#00A3EE">支付宝</span> 扫码捐赠</p>
+                    <div class="qr-card">
+                        <div class="grain-overlay"></div>
+                        <img src="alipay_qr.jpg">
+                    </div>
                 </div>
+                <p class="text-zinc-400 text-base md:text-xl text-center max-w-xl px-4">
+                    如果你喜欢 betterCam，欢迎支持它的开发。每一份支持都弥足珍贵。
+                </p>
             </div>
-
-            <p class="text-zinc-400 text-xl md:text-2xl text-center max-w-2xl mt-12 mb-12">
-                如果你喜欢 betterCam，欢迎支持它的开发。每一份鼓励对独立开发者都至关重要。
-            </p>
-
-            <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
+            <div class="w-full text-center pt-4" style="padding-bottom: env(safe-area-inset-bottom, 20px);">
+                <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
+            </div>
         </section>
 
     </div>
@@ -183,7 +190,7 @@
 
   function move() {
     isMoving = true;
-    container.style.transform = `translateY(-${currentIndex * 100}vh)`;
+    container.style.transform = `translateY(-${currentIndex * 100}dvh)`;
     setTimeout(() => { isMoving = false; }, 800);
   }
 </script>

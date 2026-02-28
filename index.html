@@ -6,8 +6,15 @@
     <title>betterCam - Tactile Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body { margin: 0; overflow: hidden; background: #000; -webkit-font-smoothing: antialiased; }
-        .viewport { width: 100vw; height: 100vh; position: relative; touch-action: none; overflow: hidden; }
+        .viewport { width: 100vw; height: 100dvh; position: relative; touch-action: none; overflow: hidden; }
+
+        .section:last-child {
+            padding-bottom: env(safe-area-inset-bottom); /* 适配 iOS 底部横条 */
+        }
 
         /* 💡 弹簧过渡动画 */
         .slide-container {
@@ -16,7 +23,7 @@
             will-change: transform;
         }
 
-        .section { height: 100vh; width: 100vw; flex-shrink: 0; }
+        .section { height: 100dvh; width: 100vw; flex-shrink: 0; }
 
         /* 💡 纹理叠加层 - 放在图片上方 */
         .grain-overlay {
@@ -119,7 +126,7 @@
 <div class="viewport" id="viewport">
     <div class="slide-container" id="container">
 
-        <section class="section flex flex-col items-center justify-center bg-zinc-900/40">
+        <section class="section flex flex-col items-center justify-center">
             <img src="appicon.png" alt="betterCam App Icon" class="w-40 h-40 rounded-[22.5%] mb-8 shadow-2xl">
             <h1 class="text-6xl font-bold tracking-tighter mb-4">betterCam</h1>
             <p class="text-zinc-500 text-xl">Analog soul, modern precision.</p>
@@ -186,25 +193,26 @@
             </a>
         </section>
 
-        <section class="section flex flex-col items-center justify-center bg-black/80 p-8">
-            <h2 class="text-5xl md:text-6xl font-bold mb-12 tracking-tighter text-center">Support betterCam.</h2>
+        <section class="section flex flex-col items-center justify-between bg-black/80 p-8">
+            <div class="flex-1 flex flex-col items-center justify-center w-full">
+                <h2 class="text-4xl md:text-6xl font-bold mb-8 tracking-tighter text-center">Support betterCam</h2>
 
-            <div class="flex flex-col items-center gap-6">
-                <p class="text-zinc-200 text-lg md:text-xl font-medium tracking-wide">
-                    Scan to Donate via <span class="text-blue-400">Alipay</span>
-                </p>
-
-                <div class="qr-card">
-                    <div class="grain-overlay"></div>
-                    <img src="alipay_qr.jpg" alt="Alipay QR Code">
+                <div class="flex flex-col items-center gap-6 mb-8">
+                    <p class="text-zinc-200 text-lg font-medium">Scan to Donate via <span class="text-blue-400">Alipay</span></p>
+                    <div class="qr-card">
+                        <div class="grain-overlay"></div>
+                        <img src="alipay_qr.jpg" alt="Alipay QR Code">
+                    </div>
                 </div>
+
+                <p class="text-zinc-400 text-base md:text-xl text-center max-w-xl px-4">
+                    If you enjoy betterCam, consider supporting its development.
+                </p>
             </div>
 
-            <p class="text-zinc-400 text-xl md:text-2xl text-center max-w-2xl mt-12 mb-12">
-                If you enjoy betterCam, consider supporting its development. Every contribution helps.
-            </p>
-
-            <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
+            <div class="w-full text-center pt-4" style="padding-bottom: env(safe-area-inset-bottom, 20px);">
+                <div class="text-zinc-500 text-sm">© 2026 betterCam by Rice. All rights reserved.</div>
+            </div>
         </section>
 
     </div>
@@ -240,7 +248,8 @@
 
   function move() {
     isMoving = true;
-    container.style.transform = `translateY(-${currentIndex * 100}vh)`;
+    // 使用 translateY 配合 dvh 单位
+    container.style.transform = `translateY(-${currentIndex * 100}dvh)`;
     setTimeout(() => { isMoving = false; }, 800);
   }
 </script>
