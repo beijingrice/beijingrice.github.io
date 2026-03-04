@@ -227,9 +227,11 @@
   let isMoving = false;
   let startY = 0;
 
+  let threshold = 20
+
   window.addEventListener('wheel', (e) => {
     if (isMoving) return;
-    if (Math.abs(e.deltaY) < 30) return;
+    if (Math.abs(e.deltaY) < threshold) return;
     if (e.deltaY > 0 && currentIndex < totalSections - 1) currentIndex++;
     else if (e.deltaY < 0 && currentIndex > 0) currentIndex--;
     move();
